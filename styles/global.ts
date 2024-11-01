@@ -5,6 +5,7 @@ export const colors = {
     borderInput: "#E8E8E8",
     borderFocusInput: "#FF6C00",
     blueLight: "#1B4371",
-    orangeMain: "#FF6C00"
+    orangeMain: "#FF6C00",
+    grayText: "#BDBDBD"
 
 }

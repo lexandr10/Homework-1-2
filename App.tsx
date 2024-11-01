@@ -1,28 +1,15 @@
-import { ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { ActivityIndicator} from 'react-native';
 import * as SplashScreen from "expo-splash-screen";
+import 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
-import { useEffect, useState } from 'react';
+import { useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import LoginScreen from './screens/LoginScreen';
-
-import RegistrationScreen from './screens/RegistrationScreen';
-
-type rootStackParams = {
-  Login: undefined,
-  Registration: undefined
-}
+import StackLoginNav from './navigation/StackLoginNav';
+import BottomTabNav from './navigation/BottomTabNav';
 
 SplashScreen.preventAutoHideAsync();
-const Stack = createStackNavigator<rootStackParams>();
-
-export type LoginScreenNavigationProp = StackNavigationProp<rootStackParams, 'Login'>;
-export type RegistationScreenNavigationProp = StackNavigationProp<rootStackParams, 'Registration'>;
-
-
-
-
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -42,12 +29,12 @@ export default function App() {
     return <ActivityIndicator/>
   }
 
-  return  <NavigationContainer>
-  <Stack.Navigator initialRouteName="Login">
-    <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
-    <Stack.Screen options={{headerShown: false}} name="Registration" component={RegistrationScreen} />
-  </Stack.Navigator>
+  return  <GestureHandlerRootView style={{ flex: 1 }}>
+     <NavigationContainer>
+  <BottomTabNav/>
 </NavigationContainer>
+  </GestureHandlerRootView>
+ 
 ;
 }
 

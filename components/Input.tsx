@@ -8,7 +8,9 @@ type inputProps = {
     outerStyles?: StyleProp<ViewStyle>,
     rightButton?: React.ReactNode,
     onTextChange: (value: string) => void,
-    secureTextEntry?: boolean
+    secureTextEntry?: boolean,
+    leftIcon?: React.ReactNode,
+    colorText?: string
 }
 
 const Input: FC<inputProps> = ({
@@ -17,7 +19,9 @@ const Input: FC<inputProps> = ({
     rightButton, 
     onTextChange, 
     value, 
-    secureTextEntry = false
+    secureTextEntry = false,
+    leftIcon,
+    colorText
 }) => {
 
     const [isFocused, setIsFocused] = useState(false);
@@ -26,6 +30,7 @@ const Input: FC<inputProps> = ({
 return <View 
         style={[styles.input, outerStyles, isFocused && styles.inputFocused]}
         >
+    {leftIcon}
     <TextInput 
     value={value}
     placeholder={placeholder} 
@@ -35,6 +40,7 @@ return <View
     autoCapitalize="none"
     onFocus={() => setIsFocused(true)} 
     onBlur={() => setIsFocused(false)}
+    placeholderTextColor={colorText}
     />
     {rightButton}
 </View>

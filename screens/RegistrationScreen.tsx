@@ -5,11 +5,13 @@ import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from 'react-native-image-picker';
 
-import { RegistationScreenNavigationProp } from "../App";
+
 import Input from "../components/Input";
 import Button from "../components/Button"
+
+import IconPlus from "../icons/IconPlus";
 import { useNavigation } from "@react-navigation/native";
-import IconPlus from "../components/IconPlus";
+import { RegistrationScreenNavigationProp } from "../navigation/StackLoginNav";
 
 const {width: SCREEN_WIDTH} = Dimensions.get("screen");
 
@@ -17,7 +19,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get("screen");
 
 const RegistrationScreen = () => {
 
-const navigation = useNavigation<RegistationScreenNavigationProp>();
+    const navigation = useNavigation<RegistrationScreenNavigationProp>();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ const navigation = useNavigation<RegistationScreenNavigationProp>();
     const handleEmailChange = (value: string) => {
     setEmail(value)
     }
-    const [loadImage, setLoadImage] = useState(undefined);
+    const [loadImage, setLoadImage] = useState("");
     const selectImage = () => {
     let options = {
       mediaType: 'photo',
@@ -114,7 +116,7 @@ const navigation = useNavigation<RegistationScreenNavigationProp>();
             <Text style={styles.signUpText}>
             Вже є акаунт?
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={[styles.signUpText, {textDecorationLine: "underline"}]}>Увійти</Text>
             </TouchableOpacity>
             </View> 

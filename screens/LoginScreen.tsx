@@ -6,11 +6,10 @@ import { Dimensions,
       Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import React, {  useState } from "react";
 import { colors } from "../styles/global";
-
-import { LoginScreenNavigationProp} from "../App";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { LoginScreenNavigationProp } from "../navigation/StackLoginNav";
 
 
 const {width: SCREEN_WIDTH} = Dimensions.get("screen");
@@ -19,7 +18,6 @@ const {width: SCREEN_WIDTH} = Dimensions.get("screen");
 const LoginScreen = () => {
 
 const navigation = useNavigation<LoginScreenNavigationProp>();
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(false);
@@ -88,7 +86,7 @@ return <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <Text style={styles.signUpText}>
             Немає акаунту?
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
             <Text style={[styles.signUpText, {textDecorationLine: "underline"}]}>Зареєструватися</Text>
             </TouchableOpacity>
             </View> 
