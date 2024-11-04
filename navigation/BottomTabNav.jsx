@@ -1,14 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
-import { colors } from "../styles/global";
-import { TouchableOpacity, View } from "react-native";
+import {  View } from "react-native";
 
 import ToolBarIcon from "../icons/ToolBarIcon";
 import ProfileIcon from "../icons/ProfileIcon";
 import StackCreatePosts from "./StackCreatePosts";
 import IconPlusTabBar from "../icons/IconPlusTabBar";
-import PostsScreen from "../screens/PostsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import MapScreen from "../screens/MapScreen";
+import { colors } from "../styles/global";
 
 
 const Tab = createBottomTabNavigator();
@@ -38,7 +38,7 @@ const BottomTabNav = () => {
                 </View>
               );
         }}}
-         name="Posts" component={PostsScreen}/>
+         name="Posts" component={MapScreen}/>
         <Tab.Screen 
         options={{tabBarIcon: ({focused}) => {
             const iconColor = focused ? colors.white : colors.blueLight ;

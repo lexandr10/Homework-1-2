@@ -1,6 +1,7 @@
 import { Image, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-import { ImagePickerResult } from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
 
 import { colors } from "../styles/global";
 import IconPhoto from "../icons/IconPhoto";
@@ -11,14 +12,48 @@ import Svg, { Path } from "react-native-svg"
 import Button from "./Button";
 import IconDelete from "../icons/IconDelete";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { FormCreatePostNavigationProp } from "../navigation/StackCreatePosts";
 
+export type coordsObj = {
+    latitude: number,
+    longitude: number
+}
 
 const FormCreatePost: React.FC = () => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<FormCreatePostNavigationProp>();
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
     const [photo, setPhoto] = useState<null | string>(null);
+
+    const [locationPhoto, setLocationPhoto] = useState<coordsObj | null>(null);
+
+    React.useEffect(() => {
+        (async () => {
+          
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            return;
+          }
+    
+          let location = await Location.getCurrentPositionAsync({});
+          const coords = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude
+          }
+          setLocationPhoto(coords)
+        } )();
+      }, []);
+
+const handleCreatePost = () => {
+    const data = {
+        name, 
+        photo, 
+        locationPhoto, 
+        location
+    }
+    navigation.navigate('CreatePostsScreen', data);
+        }
 
 useFocusEffect(useCallback(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } })
@@ -34,21 +69,31 @@ const cleanForm = () => {
 }
 
     const selectPhoto = async (): Promise<void> => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        const { status: mediaLibraryStatus } = await MediaLibrary.requestPermissionsAsync();
         
-        if (permissionResult.granted === false) {
-          alert("Permission to access camera roll is required!");
-          return;
-        }
+        
+    if (cameraStatus !== 'granted' || mediaLibraryStatus !== 'granted') {
+        alert("Необходимо разрешить доступ к камере и библиотеке для сохранения фото.");
+        return;
+    }
     
-        const result: ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          quality: 1,
+        const result: ImagePicker.ImagePickerResult = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
         });
     
-        if (!result.canceled && result.assets) {
-          setPhoto(result.assets[0].uri); 
+        if (!result.cancelled && result.assets && result.assets.length > 0) {
+            const imageUri = result.assets[0].uri; 
+            setPhoto(imageUri); 
+    
+            try {
+                await MediaLibrary.saveToLibraryAsync(result.assets[0].uri); 
+                alert("Фото успешно сохранено!");
+            } catch (error) {
+                console.error("Ошибка при сохранении фото:", error);
+                alert("Ошибка при сохранении фото в библиотеку.");
+            }
         }
       };
     const handleNameChange = (value: string) => {
@@ -84,7 +129,9 @@ const cleanForm = () => {
         <View style={styles. container}>
         <View style={styles.containerPhoto}>
         <TouchableOpacity onPress={selectPhoto} style={styles.btn}>
-            {photo ? <Image  style={{width: "100%", height: "100%"}} source={{uri: photo}} /> : <IconPhoto/>}
+            {photo ? <Image  
+            style={{width: "100%", height: "100%"}} 
+            source={{uri: photo}} /> : <IconPhoto/>}
         <Text style={styles.btnTitle}>Завантажте фото</Text>
        </TouchableOpacity>
         </View>
@@ -104,7 +151,9 @@ const cleanForm = () => {
             placeholder="Місцевість..."/>
         </KeyboardAvoidingView>
         <Button 
-        buttonStyle={name && location && photo ? styles.btnActiveSubmit : styles.btnSubmit} onPress={() => {}}>
+        buttonStyle={
+            name && location && photo ? styles.btnActiveSubmit : styles.btnSubmit} 
+        onPress={handleCreatePost}>
             <Text 
             style={ name && location && photo ? {color: "#FFFFFF"} : styles.textBtn }>Опубліковати</Text>
         </Button>

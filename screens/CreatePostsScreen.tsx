@@ -1,11 +1,28 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { colors } from "../styles/global";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import CardItem from "../components/CardItem";
+import { useEffect } from "react";
+import { coordsObj } from "../components/FormCreatePost";
 
+type CreatePostsScreenRouteProp = RouteProp<
+  { CreatePostsScreen: { 
+    name: string; 
+    photo: string | null; 
+    locationPhoto: coordsObj | null; 
+    location: string } },
+  'CreatePostsScreen'
+>;
 
 const CreatePostsScreen = () => {
-const navigation = useNavigation()
+const navigation = useNavigation();
+const route = useRoute<CreatePostsScreenRouteProp>();
+const {name, photo, location, locationPhoto} = route.params || {};
+
+
+useEffect(() => {
+    console.log("Route parameters:", route.params);
+}, [route.params])
 
     return <View style={styles.container}>
        <View style={styles.userContainer}>
@@ -17,9 +34,16 @@ const navigation = useNavigation()
         </View>
         <ScrollView style={{flex: 1}}>
         <View style={styles.cardsBox}>
-           <CardItem/>
-           <CardItem/>
-           <CardItem/>
+        {name && photo && location && locationPhoto ? (
+  <CardItem 
+    name={name} 
+    photo={photo} 
+    location={location} 
+    locationPhoto={locationPhoto} 
+  />
+) : (
+  <Text>No data available</Text>
+)}
         </View>
         </ScrollView>
 

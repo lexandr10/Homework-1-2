@@ -3,17 +3,30 @@ import IconLike from "../icons/IconLike";
 import IconMessage from "../icons/IconMessage";
 import { colors } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
+import { FC, useEffect } from "react";
 
+type propCardItem = {
+name?: string,
+photo?: string,
+location?: string,
+locationPhoto?: {
+    latitude: number,
+    longitude: number
+}
+}
 
-
-const CardItem = () => {
+const CardItem: FC<propCardItem> = ({name, photo, location, locationPhoto}) => {
 const navigation = useNavigation();
+useEffect(() => {
+    console.log(photo)
+}, [photo])
+
 
 return <View style={styles.cardContainer}>
 <Image 
 style={{width: "100%", borderRadius: 8}} 
-source={require("../assets/images/Rectangle 23.png")}/>
-<Text>Ліс</Text>
+source={{uri: `${photo}`}}/>
+<Text>{name}</Text>
 <View style={styles.reviewMap}>
 <TouchableOpacity style={styles.iconTextBtn}>
     <IconMessage/>
@@ -27,7 +40,7 @@ source={require("../assets/images/Rectangle 23.png")}/>
     <IconMap/>
     <Text 
     style={[styles.text, {textDecorationLine: "underline"}]}>
-        Ivano-Frankivs'k Region, Ukraine
+        {location}
         </Text>
 </TouchableOpacity>
 </View>

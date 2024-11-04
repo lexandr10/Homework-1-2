@@ -1,16 +1,25 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
-import FormCreatePost from "../components/FormCreatePost";
+import FormCreatePost, { coordsObj } from "../components/FormCreatePost";
 import LogoutIcon from "../icons/LogoutIcon";
 import Review from "../components/Review";
 
 
 
-type rootStackParams = {
-    CreatePostsScreen: undefined,
-    FormCreatePost: undefined
+export type rootStackParams = {
+    CreatePostsScreen: {
+        name: string;
+        photo: string | null;
+        locationPhoto: coordsObj | null;
+        location: string;
+    }
+    FormCreatePost: undefined,
+    Review: undefined
 }
 const Stack = createStackNavigator<rootStackParams>();
+
+ export type FormCreatePostNavigationProp = StackNavigationProp<rootStackParams, "FormCreatePost">;
+
 
 const StackCreatePosts = () => {
     return <Stack.Navigator initialRouteName="CreatePostsScreen">
