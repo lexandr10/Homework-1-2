@@ -12,25 +12,26 @@ import Svg, { Path } from "react-native-svg"
 import Button from "./Button";
 import IconDelete from "../icons/IconDelete";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { FormCreatePostNavigationProp } from "../navigation/StackCreatePosts";
+import { uploadImage } from "../firebase/firebase";
+import {  useSelector } from "react-redux";
+import {  selectorUser } from "../store/selectors/selectors";
 
-export type coordsObj = {
-    latitude: number,
-    longitude: number
-}
 
-const FormCreatePost: React.FC = () => {
 
-    const navigation = useNavigation<FormCreatePostNavigationProp>();
+
+const FormCreatePost= () => {
+
+    const navigation = useNavigation();
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
-    const [photo, setPhoto] = useState<null | string>(null);
-
-    const [locationPhoto, setLocationPhoto] = useState<coordsObj | null>(null);
+    const [photo, setPhoto] = useState(null);
+    const [locationPhoto, setLocationPhoto] = useState(null);
+    const [imageLoad, setImageLoad] = useState(null);
+    const user = useSelector(selectorUser);
+ 
 
     React.useEffect(() => {
         (async () => {
-          
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
             return;
@@ -45,14 +46,14 @@ const FormCreatePost: React.FC = () => {
         } )();
       }, []);
 
-const handleCreatePost = () => {
+const handleCreatePost = async() => {
     const data = {
-        name, 
-        photo, 
+        name,  
         locationPhoto, 
         location
     }
-    navigation.navigate('CreatePostsScreen', data);
+    await uploadImage(user.uid, imageLoad, data);
+    navigation.navigate('CreatePostsScreen');
         }
 
 useFocusEffect(useCallback(() => {
@@ -68,7 +69,7 @@ const cleanForm = () => {
     setPhoto(null)
 }
 
-    const selectPhoto = async (): Promise<void> => {
+    const selectPhoto = async () => {
         const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
         const { status: mediaLibraryStatus } = await MediaLibrary.requestPermissionsAsync();
         
@@ -78,15 +79,23 @@ const cleanForm = () => {
         return;
     }
     
-        const result: ImagePicker.ImagePickerResult = await ImagePicker.launchCameraAsync({
+        const result= await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             quality: 1,
+            saveToPhotos: true
         });
     
         if (!result.cancelled && result.assets && result.assets.length > 0) {
             const imageUri = result.assets[0].uri; 
             setPhoto(imageUri); 
-    
+            const response = await fetch(imageUri);
+            const file = await response.blob();
+
+            const fileName = imageUri.split('/').pop() || "";
+            const fileType = file.type;
+
+            const imageFile = new File([file], fileName, {type: fileType});
+            setImageLoad(imageFile);
             try {
                 await MediaLibrary.saveToLibraryAsync(result.assets[0].uri); 
                 alert("Фото успешно сохранено!");
@@ -96,10 +105,10 @@ const cleanForm = () => {
             }
         }
       };
-    const handleNameChange = (value: string) => {
+    const handleNameChange = (value) => {
     setName(value)
     }
-    const handleLocationChange = (value: string) => {
+    const handleLocationChange = (value) => {
         setLocation(value)
         }
     const IconMap = (<Svg

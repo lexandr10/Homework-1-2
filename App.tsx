@@ -1,4 +1,4 @@
-import { ActivityIndicator} from 'react-native';
+import { ActivityIndicator, Text} from 'react-native';
 import * as SplashScreen from "expo-splash-screen";
 import 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
@@ -6,8 +6,11 @@ import { useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import StackLoginNav from './navigation/StackLoginNav';
-import BottomTabNav from './navigation/BottomTabNav';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { authStateChanged } from './firebase/auth';
+import MainScreen from './screens/MainScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,7 +21,6 @@ export default function App() {
 "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
 
-  
  
   useEffect(() => {
     if(fontsLoaded) {
@@ -29,13 +31,27 @@ export default function App() {
     return <ActivityIndicator/>
   }
 
-  return  <GestureHandlerRootView style={{ flex: 1 }}>
-     <NavigationContainer>
-  <BottomTabNav/>
-</NavigationContainer>
+  return  <Provider store={store.store}>
+    <PersistGate 
+    loading={<Text>Loading...</Text>}
+    persistor={store.persistor}
+    >
+    <GestureHandlerRootView style={{ flex: 1 }}>
+     <AuthListner/>
   </GestureHandlerRootView>
- 
+    </PersistGate>
+  </Provider>
+
 ;
 }
 
+const AuthListner = () => {
+  const distpatch = useDispatch();
 
+  useEffect(() => {
+    authStateChanged(distpatch)
+  },[distpatch])
+  return <NavigationContainer>
+  <MainScreen/>
+</NavigationContainer>
+}

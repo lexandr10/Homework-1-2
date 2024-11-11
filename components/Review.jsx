@@ -1,16 +1,33 @@
 import { Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { colors } from "../styles/global";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useState } from "react";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 import Input from "./Input";
 import IconReviewBtn from "../icons/IconReviewBtn";
+import { useDispatch, useSelector } from "react-redux";
+import { selectorPosts, selectorUser } from "../store/selectors/selectors";
+import { addComment } from "../firebase/firebase";
+import postThunk from "../store/thunk/postThunk";
 
 const Review = () => {
 const navigation = useNavigation();
 const [review, setReview] = useState("");
+const route = useRoute();
+const user = useSelector(selectorUser);
+const {postsItems} = useSelector(selectorPosts);
+const ditpatch = useDispatch();
 
-const handleReviewChange = (value: string) => {
+const post = postsItems.find((item) => item.id === route.params.id);
+const comments = post ? post.comments : [];
+
+const handleReviewChange = (value) => {
 setReview(value);
+}
+
+const submitReview = async() => {
+ await addComment(route.params.id, {text: review, userId: user.uid});
+ await ditpatch(postThunk(user.uid));
+ setReview("");
 }
 
 useFocusEffect(useCallback(() => {
@@ -20,7 +37,7 @@ useFocusEffect(useCallback(() => {
     };
 }, [navigation]))
 
-const btnReview = <TouchableOpacity>
+const btnReview = <TouchableOpacity onPress={submitReview}>
     <IconReviewBtn/>
 </TouchableOpacity>
 
@@ -28,37 +45,15 @@ const btnReview = <TouchableOpacity>
      <View style={styles.container}>
     <Image style={styles.image} source={require("../assets/images/Content Block.png")} />
     <View style={{gap: 24, marginTop: 32}}>
-        <View style={styles.containerMessage}>
+        {comments.length === 0 ? <Text>No comments yet</Text> : comments.map(({text}) =><View style={styles.containerMessage}>
             <Image source={require("../assets/images/Ellipse.png")}/>
             <View style={styles.message}>
                 <Text>
-                Really love your most recent photo. 
-                I’ve been trying to capture 
-                the same thing for 
-                a few months and would love some tips!
+                {text}
                     </Text>
-                    <Text>09 червня, 2020 | 08:40</Text>
+                    <Text>Date</Text>
                     </View>
-        </View>
-        <View style={styles.containerMessage}>
-            <View style={styles.message}>
-                <Text>
-                A fast 50mm like f1.8 would help with the bokeh. 
-                I’ve been using primes as they tend to get a bit sharper images.
-                    </Text>
-                    <Text>09 червня, 2020 | 08:40</Text>
-                    </View>
-                    <Image source={require("../assets/images/AvatarGirl.png")}/>
-        </View>
-        <View style={styles.containerMessage}>
-            <Image source={require("../assets/images/Ellipse.png")}/>
-            <View style={styles.message}>
-                <Text>
-                Thank you! That was very helpful!
-                    </Text>
-                    <Text>09 червня, 2020 | 08:40</Text>
-                    </View>
-        </View>
+        </View>)}
     </View>
     <KeyboardAvoidingView 
     keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}

@@ -12,6 +12,7 @@ import Button from "../components/Button"
 import IconPlus from "../icons/IconPlus";
 import { useNavigation } from "@react-navigation/native";
 import { RegistrationScreenNavigationProp } from "../navigation/StackLoginNav";
+import { registerDB } from "../firebase/auth";
 
 const {width: SCREEN_WIDTH} = Dimensions.get("screen");
 
@@ -62,7 +63,7 @@ const RegistrationScreen = () => {
     }
 
     const submit = () => {
-        console.log({email, password, login})
+        registerDB({email, password, login})
     }
 
     const showButton = (

@@ -11,10 +11,15 @@ import MapScreen from "../screens/MapScreen";
 import { colors } from "../styles/global";
 
 
+
+
 const Tab = createBottomTabNavigator();
 
 
 const BottomTabNav = () => {
+
+
+
     const navigation = useNavigation();
     return <Tab.Navigator initialRouteName="CreatePosts"
     screenOptions={{

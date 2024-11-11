@@ -1,6 +1,6 @@
 import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
-import FormCreatePost, { coordsObj } from "../components/FormCreatePost";
+import FormCreatePost, { coordsObj } from "../components/FormCreatePosts";
 import LogoutIcon from "../icons/LogoutIcon";
 import Review from "../components/Review";
 

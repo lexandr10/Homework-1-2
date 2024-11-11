@@ -3,9 +3,24 @@ import IconAvatar from "../icons/IconAvatar";
 import { colors } from "../styles/global";
 import LogoutIcon from "../icons/LogoutIcon";
 import CardItem from "./CardItem";
+import { useSelector } from "react-redux";
+import { selectorPosts, selectorUser } from "../store/selectors/selectors";
+import { useEffect, useState } from "react";
 
 const Account = () => {
+    const user = useSelector(selectorUser);
+    const [data, setData] = useState(null);
+    const {postsItems, status, error} = useSelector(selectorPosts);
+
+useEffect(() => {
+    console.log("Profile",user);
+if(user) {
+    setData(user);
+}
+},[user, data])
+
     return <View style={{flex: 1}}>
+       
     <Image 
 source={require("../assets/images/Photo BG.png")} 
 resizeMode="cover" 
@@ -20,12 +35,18 @@ style={styles.image}/>
        <View style={styles.IconLogout}>
            <LogoutIcon/>
        </View>
-       <Text style={styles.title}>Natali Romanova</Text>
+       <Text style={styles.title}>{user.email}</Text>
        <ScrollView style={{flex: 1}}>
        <View style={{marginTop: 32, gap: 32}}>
-           <CardItem/>
-           <CardItem/>
-           <CardItem/>
+           {postsItems?.map(({name,id , location, userId,imageURL,  coordinates, likes, comments}) => <CardItem 
+        id={id}
+        name={name}
+        location={location}
+        userId={userId}
+        imageURL={imageURL}
+        coordinates={coordinates}
+        likes={likes}
+        comments={comments}/>)}
        </View>
        </ScrollView>
    </View>

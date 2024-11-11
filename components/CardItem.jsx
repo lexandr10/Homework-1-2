@@ -3,38 +3,28 @@ import IconLike from "../icons/IconLike";
 import IconMessage from "../icons/IconMessage";
 import { colors } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
-import { FC, useEffect } from "react";
 
-type propCardItem = {
-name?: string,
-photo?: string,
-location?: string,
-locationPhoto?: {
-    latitude: number,
-    longitude: number
-}
-}
 
-const CardItem: FC<propCardItem> = ({name, photo, location, locationPhoto}) => {
+
+
+const CardItem = ({name, location, userId, imageURL,id,  coordinates, likes, comments}) => {
 const navigation = useNavigation();
-useEffect(() => {
-    console.log(photo)
-}, [photo])
 
 
-return <View style={styles.cardContainer}>
-<Image 
+
+return <View key={id} style={styles.cardContainer}>
+<Image source={{uri: imageURL}}
 style={{width: "100%", borderRadius: 8}} 
-source={{uri: `${photo}`}}/>
+/>
 <Text>{name}</Text>
 <View style={styles.reviewMap}>
-<TouchableOpacity style={styles.iconTextBtn}>
+<TouchableOpacity onPress={() => navigation.navigate('Review', {id})} style={styles.iconTextBtn}>
     <IconMessage/>
-    <Text style={styles.text}>4</Text>
+    <Text style={styles.text}>{comments?.length}</Text>
 </TouchableOpacity>
-<TouchableOpacity onPress={() => navigation.navigate('Review')} style={styles.iconTextBtn}>
+<TouchableOpacity style={styles.iconTextBtn}>
     <IconLike/>
-    <Text style={styles.text}>4</Text>
+    <Text style={styles.text}>{likes}</Text>
 </TouchableOpacity>
 <TouchableOpacity style={styles.iconTextBtn}>
     <IconMap/>
@@ -70,4 +60,4 @@ alignItems: "center"
     }
 })
 
-export default CardItem
+export default CardItem;

@@ -10,6 +10,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { LoginScreenNavigationProp } from "../navigation/StackLoginNav";
+import { loginDB } from "../firebase/auth";
+import { useDispatch } from "react-redux";
 
 
 const {width: SCREEN_WIDTH} = Dimensions.get("screen");
@@ -21,6 +23,7 @@ const navigation = useNavigation<LoginScreenNavigationProp>();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(false);
+    const dispatch = useDispatch();
 
     const handleEmailChange = (value: string) => {
     setEmail(value)
@@ -35,7 +38,7 @@ const navigation = useNavigation<LoginScreenNavigationProp>();
     }
 
     const login = () => {
-        console.log({email, password})
+        loginDB({email, password},dispatch);
     }
 
 
