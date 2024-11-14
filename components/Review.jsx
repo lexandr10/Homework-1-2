@@ -43,7 +43,7 @@ const btnReview = <TouchableOpacity onPress={submitReview}>
 
  return <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
      <View style={styles.container}>
-    <Image style={styles.image} source={require("../assets/images/Content Block.png")} />
+    <Image style={styles.image} source={{uri: route.params.imageURL}} />
     <View style={{gap: 24, marginTop: 32}}>
         {comments.length === 0 ? <Text>No comments yet</Text> : comments.map(({text}) =><View style={styles.containerMessage}>
             <Image source={require("../assets/images/Ellipse.png")}/>
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
 
     image: {
         width: "100%",
+        height: 240,
         borderRadius: 8,
         marginTop: 32
     },

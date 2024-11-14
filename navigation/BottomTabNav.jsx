@@ -27,7 +27,7 @@ const BottomTabNav = () => {
         tabBarShowLabel: false,
         tabBarStyle: {height: 83}
         }}>
-        <Tab.Screen options={{tabBarIcon: ({focused}) => {
+        <Tab.Screen options={{headerTitle: "Map", headerTitleAlign: "center", tabBarIcon: ({focused}) => {
             const iconColor = focused ? colors.white : colors.blueLight ;
             const containerStyle = {
                 backgroundColor: focused ? colors.orangeMain : "transparent",

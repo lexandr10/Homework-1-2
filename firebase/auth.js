@@ -4,7 +4,6 @@ import { getAuth,
     onAuthStateChanged, 
     updateProffile, 
     signOut } from 'firebase/auth';
-    import { doc, getDoc, } from "firebase/firestore";
 import { auth } from '../config';
 import { clearInfo, setUser } from '../store/slices/Slice';
 import { addUser } from './firebase';
@@ -37,18 +36,6 @@ export const loginDB = async ({email, password}, dispatch) => {
     try {
         const credentials = await signInWithEmailAndPassword(auth, email, password);
         const user = credentials.user;
-        const userDocRef = await doc(db, "users", credentials.user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            dispatch(setUser({
-                uid: user.uid,
-                email: user.email,
-                displayName: userData.displayName 
-            }));
-        } else {
-            console.log("Документ пользователя не найден в Firestore.");
-        }
     } catch (error) {
         throw error;
     }

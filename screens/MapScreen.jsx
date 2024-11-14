@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker} from "react-native-maps";
 import * as Location from 'expo-location';
+import { useDispatch, useSelector } from "react-redux";
+import { selectorPosts } from "../store/selectors/selectors";
 
 
-type coordsObj = {
-    latitude: number,
-    longitude: number
-}
 
 const MapScreen = () => {
     const [region, setRegion] = useState({
@@ -16,7 +14,8 @@ const MapScreen = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
-    const [location, setLocation] = useState<coordsObj | null>(null);
+    const [location, setLocation] = useState(null);
+    const {postsItems, status, error} = useSelector(selectorPosts);
 
     useEffect(() => {
         if (location) {
@@ -65,6 +64,11 @@ const MapScreen = () => {
           coordinate={location}
           description='Hello'
         />}
+        {postsItems?.map(({coordinates, name,location}) => <Marker
+          title={name}
+          coordinate={coordinates}
+          description={location}
+        />)}
        
       </MapView>
     </View>

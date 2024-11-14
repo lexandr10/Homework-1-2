@@ -38,7 +38,7 @@ if (status === 'loading') {
         <View style={styles.cardsBox}>
         { postsItems.length === 0 ? <View><Text>
             You have no existing posts.</Text>
-        </View> : postsItems?.map(({name,id , location, userId,imageURL,  coordinates, likes, comments}) => 
+        </View> : postsItems?.map(({name,id , location, userId, imageURL,  coordinates, likes, comments}) => 
         <CardItem 
         id={id}
         name={name}

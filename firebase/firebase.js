@@ -1,6 +1,7 @@
-import { collection, addDoc, doc, setDoc,query, where, getDocs,arrayUnion, updateDoc } from "firebase/firestore";
+import { getDoc,collection, addDoc, doc, setDoc,query, where, getDocs,arrayUnion, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, Timestamp } from "firebase/storage";
 import { db, storage } from "../config";
+import { setUser } from "../store/slices/Slice";
 
 
 export const addUser = async(userId, userData) => {
@@ -70,4 +71,29 @@ try {
 } catch (error) {
     throw error;
 }
+}
+
+export const getInfoUserByUid = async (uid, dispatch) => {
+    try {
+        const q = query(collection(db, "users"), where("uid", "==", uid));
+    
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+            const userData = userDoc.data();
+
+            dispatch(setUser({
+                uid: userData.uid,
+                email: userData.email,
+                displayName: userData.displayName
+            }));
+
+            return userData;
+        } else {
+            console.log("Документ пользователя не найден в Firestore.");
+        }
+    } catch (error) {
+        console.error("Ошибка при получении данных пользователя:", error);
+    }
 }

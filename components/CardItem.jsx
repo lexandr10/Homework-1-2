@@ -12,13 +12,14 @@ const navigation = useNavigation();
 
 
 
+
 return <View key={id} style={styles.cardContainer}>
 <Image source={{uri: imageURL}}
-style={{width: "100%", borderRadius: 8}} 
+style={{width: "100%",height: 240, borderRadius: 8}} 
 />
 <Text>{name}</Text>
 <View style={styles.reviewMap}>
-<TouchableOpacity onPress={() => navigation.navigate('Review', {id})} style={styles.iconTextBtn}>
+<TouchableOpacity onPress={() => navigation.navigate('Review', {id, imageURL})} style={styles.iconTextBtn}>
     <IconMessage/>
     <Text style={styles.text}>{comments?.length}</Text>
 </TouchableOpacity>
